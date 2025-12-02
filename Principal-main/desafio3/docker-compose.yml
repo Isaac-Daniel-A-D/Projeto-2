@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  web-app:
+    build: .
+    container_name: visit-counter-web
+    ports:
+      - "5000:5000"
+    depends_on:
+      - data-store
+      - cache-layer
+    environment:
+      - DB_HOST=data-store
+      - DB_NAME=visitors_db
+      - DB_USER=admin
+      - DB_PASSWORD=secret
+      - REDIS_HOST=cache-layer
+    networks:
+      - app-network
+
+  data-store:
+    image: postgres:15-slim
+    container_name: visit-counter-db
+    environment:
+      - POSTGRES_DB=visitors_db
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  cache-layer:
+    image: redis:alpine
+    container_name: visit-counter-redis
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  pgdata:

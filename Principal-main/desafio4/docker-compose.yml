@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  employees-api:
+    build: ./employees_api
+    container_name: ms-employees
+    ports:
+      - "8000:8000"
+    networks:
+      - corporate-net
+
+  badge-service:
+    build: ./badge_service
+    container_name: ms-badges
+    ports:
+      - "5001:5000"
+    environment:
+      - EMPLOYEE_SERVICE_URL=http://employees-api:8000/employees
+    depends_on:
+      - employees-api
+    networks:
+      - corporate-net
+
+networks:
+  corporate-net:
+    driver: bridge

@@ -1,0 +1,12 @@
+services:
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "3001:3001"
+
+  data-service:
+    build: ./data-service
+    container_name: data-service
+    ports:
+      - "3002:3002"
